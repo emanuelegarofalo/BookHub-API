@@ -1,4 +1,4 @@
-package com.manu.BookHub.API;
+package com.manu.BookHubAPI;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

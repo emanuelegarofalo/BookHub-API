@@ -1,6 +1,6 @@
-package com.manu.BookHub.API.repository;
+package com.manu.BookHubAPI.repository;
 
-import com.manu.BookHub.API.model.Loan;
+import com.manu.BookHubAPI.model.Loan;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

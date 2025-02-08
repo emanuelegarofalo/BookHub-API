@@ -1,4 +1,4 @@
-package com.manu.BookHub.API.model;
+package com.manu.BookHubAPI.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -17,8 +17,9 @@ public class Book {
     private Long id;
     private String title;
     private String publisher;
+    private String Genre;
     @NaturalId
-    private String isbn;
+    private Integer isbn;
     private String description;
     private BigDecimal price;
     private Integer quantity;
@@ -36,7 +37,7 @@ public class Book {
 
     public Book(String title,
                 String publisher,
-                String isbn,
+                Integer isbn,
                 String description,
                 BigDecimal price,
                 Integer quantity,

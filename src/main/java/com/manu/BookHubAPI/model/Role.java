@@ -1,4 +1,4 @@
-package com.manu.BookHub.API.model;
+package com.manu.BookHubAPI.model;
 
 import lombok.Getter;
 
