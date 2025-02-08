@@ -4,5 +4,5 @@ spring:
     username: root
     password: strong_password
   jpa:
-    hibernate.ddl-auto: validate
+    hibernate.ddl-auto: update
     show-sql: true
