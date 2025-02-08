@@ -2,6 +2,8 @@ package com.manu.BookHub.API.repository;
 
 import com.manu.BookHub.API.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface UserInterface  extends JpaRepository<User, Long> {
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
 }
