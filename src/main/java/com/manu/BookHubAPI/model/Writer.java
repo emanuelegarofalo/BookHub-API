@@ -1,6 +1,7 @@
 package com.manu.BookHubAPI.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,7 +17,9 @@ public class Writer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotNull(message = "Name is required")
     private String name;
+    @NotNull(message = "Last name is required")
     private String lastName;
     @NaturalId
     private String email;

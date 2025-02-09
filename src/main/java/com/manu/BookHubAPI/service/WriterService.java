@@ -21,7 +21,7 @@ public class WriterService {
         System.out.println(writer.getEmail());
         if (!writerRepository.existsByEmail(writer.getEmail())) {
             return writerRepository.save(new Writer(writer.getName(), writer.getLastName(), writer.getEmail()));
-        } else throw new WriterAlreadyExistsException(writer.getEmail());
+        } else throw new WriterAlreadyExistsException();
     }
 
     public Writer getWriterByFullName(String name, String lastName) throws WriterNotFoundException {
@@ -33,5 +33,10 @@ public class WriterService {
 
         if (writers.isEmpty()) throw new WriterNotFoundException();
         return writers;
+    }
+
+    public void deleteWriter(Long id) throws WriterNotFoundException {
+        Writer writer = writerRepository.findById(id).orElseThrow(WriterNotFoundException::new);
+        writerRepository.delete(writer);
     }
 }

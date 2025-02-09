@@ -1,6 +1,7 @@
 package com.manu.BookHubAPI.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,7 +16,9 @@ public class Loan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotNull(message = "Loan date is required")
     private LocalDate loanDate;
+    @NotNull(message = "Return date is required")
     private LocalDate returnDate;
     @Enumerated(EnumType.STRING)
     private StateOfLoan status;

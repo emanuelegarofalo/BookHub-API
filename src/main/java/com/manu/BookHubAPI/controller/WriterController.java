@@ -22,12 +22,8 @@ public class WriterController {
 
     @PostMapping("/create")
     public ResponseEntity<ApiResponse> createWriter(@RequestBody WriterDTO writer) {
-        try {
-            Writer createdWriter = writerService.createWriter(writer);
-            return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse("Writer created", WriterMapper.INSTANCE.toWriterDTO(createdWriter)));
-        } catch (WriterAlreadyExistsException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiResponse(e.getMessage(), null));
-        }
+        Writer createdWriter = writerService.createWriter(writer);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse("Writer created", WriterMapper.INSTANCE.toWriterDTO(createdWriter)));
     }
 
     @GetMapping("/find-by-criteria")
@@ -35,13 +31,13 @@ public class WriterController {
                                                             @RequestParam(required = false) String name,
                                                             @RequestParam(required = false) String lastName,
                                                             @RequestParam(required = false) String email) {
-        try {
-            Set<Writer> writers = writerService.getWriters(id, name, lastName, email);
-            return ResponseEntity.status(HttpStatus.FOUND).body(new ApiResponse("Writer found", writers.stream().map(WriterMapper.INSTANCE::toWriterDTO).toList()));
-        } catch (WriterNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
-        }
-
+        Set<Writer> writers = writerService.getWriters(id, name, lastName, email);
+        return ResponseEntity.status(HttpStatus.FOUND).body(new ApiResponse("Writer found", writers.stream().map(WriterMapper.INSTANCE::toWriterDTO).toList()));
     }
 
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<ApiResponse> deleteWriter(@PathVariable Long id) {
+        writerService.deleteWriter(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+    }
 }

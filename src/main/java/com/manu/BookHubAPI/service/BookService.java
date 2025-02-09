@@ -7,11 +7,11 @@ import com.manu.BookHubAPI.model.Book;
 import com.manu.BookHubAPI.model.Writer;
 import com.manu.BookHubAPI.repository.BookRepository;
 import com.manu.BookHubAPI.repository.specifications.BookSpecifications;
+import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -40,17 +40,13 @@ public class BookService {
         } else return books;
     }
 
-    public Book getBookByTitle(String title) throws BookNotFoundException {
-        return bookRepository.findByTitle(title).orElseThrow(BookNotFoundException::new);
-    }
-
     public Book createBook(BookDTO book) throws BookAlreadyExistsException {
         if (!bookRepository.existsByIsbn(book.getIsbn())) {
             Set<Writer> writers = getWriterObjects(book.getWritersNames());
             return bookRepository.save(new Book(book.getTitle(), book.getPublisher(),
                     book.getGenre(), book.getIsbn(), book.getDescription(),
                     book.getPrice(), book.getQuantity(), writers));
-        } else throw new BookAlreadyExistsException(book.getIsbn());
+        } else throw new BookAlreadyExistsException();
     }
 
     private Set<Writer> getWriterObjects(Set<String> writersNames) {
@@ -58,5 +54,16 @@ public class BookService {
             String[] names = name.split(" ");
             return writerService.getWriterByFullName(names[0], names[1]);
         }).collect(Collectors.toSet());
+    }
+
+    public void deleteBook(Long id) throws BookNotFoundException {
+        Book book = bookRepository.findById(id).orElseThrow(BookNotFoundException::new);
+        bookRepository.delete(book);
+    }
+
+    public void updateBookQuantity(Long id, Integer quantity) throws BookNotFoundException, ConstraintViolationException {
+        Book book = bookRepository.findById(id).orElseThrow(BookNotFoundException::new);
+        book.setQuantity(book.getQuantity() - quantity);
+        bookRepository.save(book);
     }
 }
