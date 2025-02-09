@@ -44,7 +44,7 @@ public class BookSpecifications {
 //        return (root, query, cb) -> cb.like(root.get("writers"), "%" + writer + "%");
 //    }
 
-    public Specification<Book> conditionalSearchForBook(Long id, String title, String publisher, String genre, Integer isbn, String description, BigDecimal price, Integer quantity) {
+    public Specification<Book> combinedSpecification(Long id, String title, String publisher, String genre, Integer isbn, String description, BigDecimal price, Integer quantity) {
         Specification<Book> spec = Specification.where(null);
 
         if (id != null) {

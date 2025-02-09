@@ -28,7 +28,7 @@ public class BookService {
                        BigDecimal price, Integer quantity) throws BookNotFoundException {
 
         Set<Book> books = bookRepository.findAll(
-                bookSpecifications.conditionalSearchForBook(
+                bookSpecifications.combinedSpecification(
                         id, title,
                         publisher, genre,
                         isbn, description,
