@@ -1,17 +1,20 @@
 package com.manu.BookHubAPI.controller;
 
+import com.manu.BookHubAPI.config.BookMapper;
+import com.manu.BookHubAPI.dto.BookDTO;
+import com.manu.BookHubAPI.exception.BookAlreadyExistsException;
 import com.manu.BookHubAPI.exception.BookNotFoundException;
+import com.manu.BookHubAPI.exception.WriterNotFoundException;
+import com.manu.BookHubAPI.model.Book;
 import com.manu.BookHubAPI.response.ApiResponse;
 import com.manu.BookHubAPI.service.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/books")
@@ -29,8 +32,20 @@ public class BookController {
                                                           @RequestParam(required = false) BigDecimal price,
                                                           @RequestParam(required = false) Integer quantity) {
         try {
-            return ResponseEntity.status(HttpStatus.FOUND).body(new ApiResponse("Book found", bookService.getBook(id, title, publisher, genre, isbn, description, price, quantity)));
+            Set<Book> books = bookService.getBook(id, title, publisher, genre, isbn, description, price, quantity);
+            return ResponseEntity.status(HttpStatus.FOUND).body(new ApiResponse("Book found", books.stream().map(BookMapper.INSTANCE::toBookDTO).toList()));
         } catch (BookNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<ApiResponse> createBook(@RequestBody BookDTO book) {
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse("Book created", bookService.createBook(book)));
+        } catch (BookAlreadyExistsException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiResponse(e.getMessage(), null));
+        } catch (WriterNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
         }
     }

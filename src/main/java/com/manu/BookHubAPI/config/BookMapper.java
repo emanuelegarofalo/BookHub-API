@@ -10,6 +10,6 @@ import org.mapstruct.factory.Mappers;
 public interface BookMapper {
     BookMapper INSTANCE = Mappers.getMapper(BookMapper.class);
 
-    @Mapping(expression = "java(book.getWriters().stream().map(w -> w.getName()).collect(java.util.stream.Collectors.toSet()))", target = "writersNames")
+    @Mapping(expression = "java(book.getWriters().stream().map(w -> w.getName() + ' ' + w.getLastName()).collect(java.util.stream.Collectors.toSet()))", target = "writersNames")
     BookDTO toBookDTO(Book book);
 }
