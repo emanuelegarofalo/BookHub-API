@@ -10,4 +10,6 @@ import java.util.Set;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     Set<User> findAll(Specification<User> specification);
+
+    boolean existsByEmail(String email);
 }
