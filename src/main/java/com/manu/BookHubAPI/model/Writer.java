@@ -1,11 +1,13 @@
 package com.manu.BookHubAPI.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.NaturalId;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import java.util.Set;
 
@@ -21,7 +23,8 @@ public class Writer {
     private String name;
     @NotNull(message = "Last name is required")
     private String lastName;
-    @NaturalId
+    @Email
+    @Column(unique = true, nullable = false)
     private String email;
 
     @ManyToMany(mappedBy = "writers")

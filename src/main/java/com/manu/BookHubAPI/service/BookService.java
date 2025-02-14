@@ -7,11 +7,13 @@ import com.manu.BookHubAPI.model.Book;
 import com.manu.BookHubAPI.model.Writer;
 import com.manu.BookHubAPI.repository.BookRepository;
 import com.manu.BookHubAPI.repository.specifications.BookSpecifications;
+import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -57,13 +59,14 @@ public class BookService {
     }
 
     public void deleteBook(Long id) throws BookNotFoundException {
-        Book book = bookRepository.findById(id).orElseThrow(BookNotFoundException::new);
-        bookRepository.delete(book);
+        bookRepository.findById(id).ifPresentOrElse(bookRepository::delete, BookNotFoundException::new);
     }
 
+    @Transactional
     public void updateBookQuantity(Long id, Integer quantity) throws BookNotFoundException, ConstraintViolationException {
-        Book book = bookRepository.findById(id).orElseThrow(BookNotFoundException::new);
-        book.setQuantity(book.getQuantity() - quantity);
-        bookRepository.save(book);
+        bookRepository.findById(id).ifPresentOrElse(
+                book -> {book.setQuantity(book.getQuantity() + quantity);
+            if (book.getQuantity() == 0) bookRepository.delete(book);}
+                , BookNotFoundException::new);
     }
 }

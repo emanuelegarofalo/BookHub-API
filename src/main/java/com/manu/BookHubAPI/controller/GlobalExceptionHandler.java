@@ -30,6 +30,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResponse handleConstraintViolationException(ConstraintViolationException e) {
-        return new ApiResponse("sembra che le modifiche che sono state richieste non rispettano i vincoli", null);
+        return new ApiResponse("sembra che le modifiche che sono state richieste non rispettano i vincoli imposti dal database", null);
     }
 }

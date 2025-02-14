@@ -6,6 +6,7 @@ import com.manu.BookHubAPI.exception.UserNotFoundException;
 import com.manu.BookHubAPI.model.User;
 import com.manu.BookHubAPI.repository.UserRepository;
 import com.manu.BookHubAPI.repository.specifications.UserSpecification;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,11 +25,7 @@ public class UserService {
         else return users;
     }
 
-    private User getUserById(Long id) {
-        return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
-    }
-
-    public void createUser(UserDTO user) {
+    public void createUser(@NotNull UserDTO user) {
         if (!userRepository.existsByEmail(user.getEmail())) {
             userRepository.save(
                     new User(user.getUsername(), user.getEmail(),user.getPassword(), user.getRole()));
@@ -41,21 +38,19 @@ public class UserService {
         } else throw new UserNotFoundException();
     }
 
-    public void updateEmail(Long id, String email) {
-        User userToUpdate = getUserById(id);
-        userToUpdate.setEmail(email);
-        userRepository.save(userToUpdate);
-    }
+    public User updateUser(Long id, String email, String userName, String password) {
+        User userToUpdate = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
 
-    public void updateUsername(Long id, String username) {
-        User userToUpdate = getUserById(id);
-        userToUpdate.setUsername(username);
-        userRepository.save(userToUpdate);
-    }
+        if (email != null && !email.isEmpty()) {
+            userToUpdate.setEmail(email);
+        }
+        if (userName != null && !userName.isEmpty()) {
+            userToUpdate.setUsername(userName);
+        }
+        if (password != null && !password.isEmpty()) {
+            userToUpdate.setPassword(password);
+        }
 
-    public void updatePassword(Long id, String password) {
-        User userToUpdate = getUserById(id);
-        userToUpdate.setPassword(password);
-        userRepository.save(userToUpdate);
+        return userRepository.save(userToUpdate);
     }
 }

@@ -2,8 +2,6 @@ package com.manu.BookHubAPI.controller;
 
 import com.manu.BookHubAPI.config.WriterMapper;
 import com.manu.BookHubAPI.dto.WriterDTO;
-import com.manu.BookHubAPI.exception.WriterAlreadyExistsException;
-import com.manu.BookHubAPI.exception.WriterNotFoundException;
 import com.manu.BookHubAPI.model.Writer;
 import com.manu.BookHubAPI.response.ApiResponse;
 import com.manu.BookHubAPI.service.WriterService;
@@ -14,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 
+@SuppressWarnings("unused")
 @RestController
 @RequestMapping("/api/writers")
 @RequiredArgsConstructor
@@ -39,5 +38,14 @@ public class WriterController {
     public ResponseEntity<ApiResponse> deleteWriter(@PathVariable Long id) {
         writerService.deleteWriter(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<ApiResponse> updateWriter(@PathVariable Long id,
+                                                    @RequestParam(required = false) String name,
+                                                    @RequestParam(required = false) String lastName,
+                                                    @RequestParam(required = false) String email) {
+        Writer writerUpdated = writerService.updateWriter(id, email, name, lastName);
+        return ResponseEntity.ok(new ApiResponse("update done", writerUpdated));
     }
 }
