@@ -6,6 +6,7 @@ import com.manu.BookHubAPI.exception.WriterNotFoundException;
 import com.manu.BookHubAPI.model.Writer;
 import com.manu.BookHubAPI.repository.WriterRepository;
 import com.manu.BookHubAPI.repository.specifications.WriterSpecification;
+import com.manu.BookHubAPI.request.WriterCriteriaDTO;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,9 +29,11 @@ public class WriterService {
         return writerRepository.findByNameAndLastName(name, lastName).orElseThrow(WriterNotFoundException::new);
     }
 
-    public Set<Writer> getWriters(Long id, String name, String lastName, String email) throws WriterNotFoundException{
-        Set<Writer> writers = writerRepository.findAll(writerSpecification.combinedSpecification(id, name, lastName, email));
-
+    public Set<Writer> getWriters(WriterCriteriaDTO criteria) throws WriterNotFoundException{
+        Set<Writer> writers = writerRepository.findAll(
+                writerSpecification.combinedSpecification(criteria.id(), criteria.name(),
+                        criteria.lastName(), criteria.email(), criteria.bookId())
+        );
         if (writers.isEmpty()) throw new WriterNotFoundException();
         return writers;
     }
@@ -40,19 +43,19 @@ public class WriterService {
         writerRepository.delete(writer);
     }
 
-    public Writer updateWriter(Long id, String email, String firstName, String lastName) {
+    public Writer updateWriter(Long id, WriterCriteriaDTO criteria) {
         Writer writerToUpdate = writerRepository.findById(id).orElseThrow(WriterNotFoundException::new);
 
-        if (email != null && !email.isEmpty()) {
-            if (!writerRepository.existsByEmail(email)) {
-                writerToUpdate.setEmail(email);
+        if (criteria.email() != null && !criteria.email().isEmpty()) {
+            if (!writerRepository.existsByEmail(criteria.email())) {
+                writerToUpdate.setEmail(criteria.email());
             } else throw new WriterAlreadyExistsException();
         }
-        if (firstName != null && !firstName.isEmpty()) {
-            writerToUpdate.setName(firstName);
+        if (criteria.name() != null && !criteria.name().isEmpty()) {
+            writerToUpdate.setName(criteria.name());
         }
-        if (lastName != null && !lastName.isEmpty()) {
-            writerToUpdate.setLastName(lastName);
+        if (criteria.lastName() != null && !criteria.lastName().isEmpty()) {
+            writerToUpdate.setLastName(criteria.lastName());
         }
 
         return writerRepository.save(writerToUpdate);

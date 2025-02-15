@@ -31,10 +31,11 @@ public class Loan {
     @JoinColumn(name = "book_id")
     private Book book;
 
-    public Loan(User user, Book book) {
+    public Loan(User user, Book book, LocalDate returnDate) {
         this.user = user;
         this.book = book;
         this.loanDate = LocalDate.now();
+        this.returnDate = returnDate;
         this.status = StateOfLoan.ACTIVE;
     }
 }

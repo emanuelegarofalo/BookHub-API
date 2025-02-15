@@ -6,40 +6,47 @@ import com.manu.BookHubAPI.exception.BookNotFoundException;
 import com.manu.BookHubAPI.model.Book;
 import com.manu.BookHubAPI.model.Writer;
 import com.manu.BookHubAPI.repository.BookRepository;
-import com.manu.BookHubAPI.repository.specifications.BookSpecifications;
+import com.manu.BookHubAPI.repository.specifications.BookSpecification;
+import com.manu.BookHubAPI.request.BookCriteriaDTO;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class BookService {
-    private final BookSpecifications bookSpecifications;
+    private final BookSpecification bookSpecification;
     private final BookRepository bookRepository;
     private final WriterService writerService;
 
-    public Set<Book> getBook(Long id, String title,
-                       String publisher, String genre,
-                       Integer isbn, String description,
-                       BigDecimal price, Integer quantity) throws BookNotFoundException {
+    public Set<Book> getBook(BookCriteriaDTO criteria) throws BookNotFoundException {
 
         Set<Book> books = bookRepository.findAll(
-                bookSpecifications.combinedSpecification(
-                        id, title,
-                        publisher, genre,
-                        isbn, description,
-                        price, quantity)
+                bookSpecification.combinedSpecification(
+                        criteria.id(),
+                        criteria.title(),
+                        criteria.genre(),
+                        criteria.publisher(),
+                        criteria.isbn(),
+                        criteria.maxPrice(),
+                        criteria.quantity(),
+                        criteria.writerId()
+                )
+
         );
 
         if (books.isEmpty()) {
             throw new BookNotFoundException();
         } else return books;
+    }
+
+    public Book getBook(Long id) {
+        return bookRepository.findById(id).orElseThrow(BookNotFoundException::new);
     }
 
     public Book createBook(BookDTO book) throws BookAlreadyExistsException {

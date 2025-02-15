@@ -17,19 +17,27 @@ public class UserSpecification {
         return ((root, query, cb) -> cb.like(root.get("email"), "%" + email + "%"));
     }
 
-    public Specification<User> combinedSpecification(Long id, String username, String email) {
+    public Specification<User> byRole(String role) {
+        return ((root, query, cb) -> cb.equal(root.get("role"), role));
+    }
+
+    public Specification<User> combinedSpecification(Long id, String username, String email, String role) {
         Specification<User> spec = Specification.where(null);
 
         if (id != null) {
-            spec.and(byId(id));
+            spec = spec.and(byId(id));
         }
 
         if (username != null && !username.isEmpty()) {
-            spec.and(byUsername(username));
+            spec = spec.and(byUsername(username));
         }
 
         if (email != null && !email.isEmpty()) {
-            spec.and(byEmail(email));
+            spec = spec.and(byEmail(email));
+        }
+
+        if (role != null && !role.isEmpty()) {
+            spec = spec.and(byRole(role));
         }
 
         return spec;

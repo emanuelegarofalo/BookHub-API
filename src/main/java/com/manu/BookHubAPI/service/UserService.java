@@ -6,6 +6,8 @@ import com.manu.BookHubAPI.exception.UserNotFoundException;
 import com.manu.BookHubAPI.model.User;
 import com.manu.BookHubAPI.repository.UserRepository;
 import com.manu.BookHubAPI.repository.specifications.UserSpecification;
+import com.manu.BookHubAPI.request.UserCriteriaDTO;
+import com.manu.BookHubAPI.request.WriterCriteriaDTO;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,11 +20,18 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserSpecification userSpecification;
 
-    public Set<User> getUser(Long id, String username, String email) {
-        Set<User> users = userRepository.findAll(userSpecification.combinedSpecification(id, username, email));
+    public Set<User> getUser(UserCriteriaDTO criteria) {
+        Set<User> users = userRepository.findAll(
+                userSpecification.combinedSpecification(criteria.id(), criteria.username(),
+                        criteria.email(), criteria.role())
+        );
 
         if (users.isEmpty()) throw new UserNotFoundException();
         else return users;
+    }
+
+    public User getUser(Long id) {
+        return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
     public void createUser(@NotNull UserDTO user) {
@@ -38,17 +47,19 @@ public class UserService {
         } else throw new UserNotFoundException();
     }
 
-    public User updateUser(Long id, String email, String userName, String password) {
+    public User updateUser(Long id, UserCriteriaDTO criteria) {
         User userToUpdate = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
 
-        if (email != null && !email.isEmpty()) {
-            userToUpdate.setEmail(email);
+        if (criteria.email() != null && !criteria.email().isEmpty()) {
+            if (!userRepository.existsByEmail(criteria.email())) {
+                userToUpdate.setEmail(criteria.email());
+            } else throw new UserAlreadyExist();
         }
-        if (userName != null && !userName.isEmpty()) {
-            userToUpdate.setUsername(userName);
+        if (criteria.username() != null && !criteria.username().isEmpty()) {
+            userToUpdate.setUsername(criteria.username());
         }
-        if (password != null && !password.isEmpty()) {
-            userToUpdate.setPassword(password);
+        if (criteria.password() != null && !criteria.password().isEmpty()) {
+            userToUpdate.setPassword(criteria.password());
         }
 
         return userRepository.save(userToUpdate);

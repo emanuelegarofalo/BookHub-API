@@ -3,29 +3,32 @@ package com.manu.BookHubAPI.controller;
 import com.manu.BookHubAPI.config.UserMapper;
 import com.manu.BookHubAPI.dto.UserDTO;
 import com.manu.BookHubAPI.model.User;
+import com.manu.BookHubAPI.request.UserCriteriaDTO;
 import com.manu.BookHubAPI.response.ApiResponse;
 import com.manu.BookHubAPI.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 
 @SuppressWarnings("unused")
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
 
     @GetMapping("/getuser")
-    public ResponseEntity<ApiResponse> getUser(@RequestParam(required = false) Long id,
-                                               @RequestParam(required = false) String username,
-                                               @RequestParam(required = false) String email) {
-        Set<User> users = userService.getUser(id, username, email);
-        return ResponseEntity.status(HttpStatus.FOUND)
-                .body(new ApiResponse("user found",
+    public ResponseEntity<ApiResponse> getUser(@ModelAttribute UserCriteriaDTO criteria, @RequestParam MultiValueMap<String, String> allParam) {
+        if (allParam.containsKey("password")) {
+            return ResponseEntity.badRequest().body(new ApiResponse("la ricerca in base alla password non è consentita", null));
+        }
+
+        Set<User> users = userService.getUser(criteria);
+        return ResponseEntity.ok(new ApiResponse("user found",
                         users.stream().map(UserMapper.INSTANCE::toUserDTO)));
     }
 
@@ -43,10 +46,8 @@ public class UserController {
 
     @PutMapping("/updateuser/{id}")
     public ResponseEntity<ApiResponse> updateUser(@PathVariable Long id,
-                                                  @RequestParam(required = false) String username,
-                                                  @RequestParam(required = false) String email,
-                                                  @RequestParam(required = false) String password) {
-        User userUpdated = userService.updateUser(id, email, username, password);
+                                                  @ModelAttribute UserCriteriaDTO criteria) {
+        User userUpdated = userService.updateUser(id, criteria);
         return ResponseEntity.ok(new ApiResponse("user info updated", userUpdated));
     }
 }

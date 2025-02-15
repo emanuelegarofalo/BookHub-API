@@ -3,6 +3,7 @@ package com.manu.BookHubAPI.controller;
 import com.manu.BookHubAPI.config.WriterMapper;
 import com.manu.BookHubAPI.dto.WriterDTO;
 import com.manu.BookHubAPI.model.Writer;
+import com.manu.BookHubAPI.request.WriterCriteriaDTO;
 import com.manu.BookHubAPI.response.ApiResponse;
 import com.manu.BookHubAPI.service.WriterService;
 import lombok.RequiredArgsConstructor;
@@ -26,12 +27,9 @@ public class WriterController {
     }
 
     @GetMapping("/find-by-criteria")
-    public ResponseEntity<ApiResponse> findWriterByCriteria(@RequestParam(required = false) Long id,
-                                                            @RequestParam(required = false) String name,
-                                                            @RequestParam(required = false) String lastName,
-                                                            @RequestParam(required = false) String email) {
-        Set<Writer> writers = writerService.getWriters(id, name, lastName, email);
-        return ResponseEntity.status(HttpStatus.FOUND).body(new ApiResponse("Writer found", writers.stream().map(WriterMapper.INSTANCE::toWriterDTO).toList()));
+    public ResponseEntity<ApiResponse> findWriterByCriteria(@ModelAttribute WriterCriteriaDTO criteria) {
+        Set<Writer> writers = writerService.getWriters(criteria);
+        return ResponseEntity.ok(new ApiResponse("Writer found", writers.stream().map(WriterMapper.INSTANCE::toWriterDTO).toList()));
     }
 
     @DeleteMapping("/delete/{id}")
@@ -42,10 +40,8 @@ public class WriterController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<ApiResponse> updateWriter(@PathVariable Long id,
-                                                    @RequestParam(required = false) String name,
-                                                    @RequestParam(required = false) String lastName,
-                                                    @RequestParam(required = false) String email) {
-        Writer writerUpdated = writerService.updateWriter(id, email, name, lastName);
+                                                    @ModelAttribute WriterCriteriaDTO criteria) {
+        Writer writerUpdated = writerService.updateWriter(id, criteria);
         return ResponseEntity.ok(new ApiResponse("update done", writerUpdated));
     }
 }
