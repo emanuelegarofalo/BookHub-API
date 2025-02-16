@@ -43,7 +43,7 @@ public class WriterService {
         writerRepository.delete(writer);
     }
 
-    public Writer updateWriter(Long id, WriterCriteriaDTO criteria) {
+    public void updateWriter(Long id, WriterCriteriaDTO criteria) {
         Writer writerToUpdate = writerRepository.findById(id).orElseThrow(WriterNotFoundException::new);
 
         if (criteria.email() != null && !criteria.email().isEmpty()) {
@@ -58,6 +58,6 @@ public class WriterService {
             writerToUpdate.setLastName(criteria.lastName());
         }
 
-        return writerRepository.save(writerToUpdate);
+        writerRepository.save(writerToUpdate);
     }
 }

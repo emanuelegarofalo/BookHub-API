@@ -1,6 +1,6 @@
 package com.manu.BookHubAPI.controller;
 
-import com.manu.BookHubAPI.config.LoanMapper;
+import com.manu.BookHubAPI.config.mapper.LoanMapper;
 import com.manu.BookHubAPI.model.Loan;
 import com.manu.BookHubAPI.request.LoanCriteriaDTO;
 import com.manu.BookHubAPI.response.ApiResponse;

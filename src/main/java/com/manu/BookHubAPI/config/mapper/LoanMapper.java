@@ -1,4 +1,4 @@
-package com.manu.BookHubAPI.config;
+package com.manu.BookHubAPI.config.mapper;
 
 import com.manu.BookHubAPI.dto.LoanDTO;
 import com.manu.BookHubAPI.model.Loan;

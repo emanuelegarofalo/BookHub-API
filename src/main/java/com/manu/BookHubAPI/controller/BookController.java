@@ -1,22 +1,16 @@
 package com.manu.BookHubAPI.controller;
 
-import com.manu.BookHubAPI.config.BookMapper;
+import com.manu.BookHubAPI.config.mapper.BookMapper;
 import com.manu.BookHubAPI.dto.BookDTO;
-import com.manu.BookHubAPI.exception.BookAlreadyExistsException;
-import com.manu.BookHubAPI.exception.BookNotFoundException;
-import com.manu.BookHubAPI.exception.WriterNotFoundException;
 import com.manu.BookHubAPI.model.Book;
 import com.manu.BookHubAPI.request.BookCriteriaDTO;
 import com.manu.BookHubAPI.response.ApiResponse;
 import com.manu.BookHubAPI.service.BookService;
-import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.Set;
 
 @RestController

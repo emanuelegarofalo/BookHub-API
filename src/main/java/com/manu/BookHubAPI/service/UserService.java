@@ -34,6 +34,10 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
+    }
+
     public void createUser(@NotNull UserDTO user) {
         if (!userRepository.existsByEmail(user.getEmail())) {
             userRepository.save(
@@ -47,7 +51,7 @@ public class UserService {
         } else throw new UserNotFoundException();
     }
 
-    public User updateUser(Long id, UserCriteriaDTO criteria) {
+    public void updateUser(Long id, UserCriteriaDTO criteria) {
         User userToUpdate = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
 
         if (criteria.email() != null && !criteria.email().isEmpty()) {
@@ -62,6 +66,6 @@ public class UserService {
             userToUpdate.setPassword(criteria.password());
         }
 
-        return userRepository.save(userToUpdate);
+        userRepository.save(userToUpdate);
     }
 }

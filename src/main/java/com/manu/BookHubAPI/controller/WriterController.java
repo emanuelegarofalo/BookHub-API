@@ -1,6 +1,6 @@
 package com.manu.BookHubAPI.controller;
 
-import com.manu.BookHubAPI.config.WriterMapper;
+import com.manu.BookHubAPI.config.mapper.WriterMapper;
 import com.manu.BookHubAPI.dto.WriterDTO;
 import com.manu.BookHubAPI.model.Writer;
 import com.manu.BookHubAPI.request.WriterCriteriaDTO;
@@ -41,7 +41,7 @@ public class WriterController {
     @PutMapping("/update/{id}")
     public ResponseEntity<ApiResponse> updateWriter(@PathVariable Long id,
                                                     @ModelAttribute WriterCriteriaDTO criteria) {
-        Writer writerUpdated = writerService.updateWriter(id, criteria);
-        return ResponseEntity.ok(new ApiResponse("update done", writerUpdated));
+        writerService.updateWriter(id, criteria);
+        return ResponseEntity.ok(new ApiResponse("update done", null));
     }
 }

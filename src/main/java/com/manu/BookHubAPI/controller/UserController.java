@@ -1,6 +1,6 @@
 package com.manu.BookHubAPI.controller;
 
-import com.manu.BookHubAPI.config.UserMapper;
+import com.manu.BookHubAPI.config.mapper.UserMapper;
 import com.manu.BookHubAPI.dto.UserDTO;
 import com.manu.BookHubAPI.model.User;
 import com.manu.BookHubAPI.request.UserCriteriaDTO;
@@ -47,7 +47,7 @@ public class UserController {
     @PutMapping("/updateuser/{id}")
     public ResponseEntity<ApiResponse> updateUser(@PathVariable Long id,
                                                   @ModelAttribute UserCriteriaDTO criteria) {
-        User userUpdated = userService.updateUser(id, criteria);
-        return ResponseEntity.ok(new ApiResponse("user info updated", userUpdated));
+        userService.updateUser(id, criteria);
+        return ResponseEntity.ok(new ApiResponse("user info updated", null));
     }
 }
