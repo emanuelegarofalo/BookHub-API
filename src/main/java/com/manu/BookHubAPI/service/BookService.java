@@ -72,8 +72,7 @@ public class BookService {
     @Transactional
     public void updateBookQuantity(Long id, Integer quantity) throws BookNotFoundException, ConstraintViolationException {
         bookRepository.findById(id).ifPresentOrElse(
-                book -> {book.setQuantity(book.getQuantity() + quantity);
-            if (book.getQuantity() == 0) bookRepository.delete(book);}
+                book -> book.setQuantity(book.getQuantity() + quantity)
                 , BookNotFoundException::new);
     }
 }

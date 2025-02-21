@@ -16,7 +16,7 @@ public class WebSecurity {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/api/users/**").permitAll()
-                        .requestMatchers("api/writers/**").hasRole("ADMIN")
+                        .requestMatchers("/api/writers/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .build();

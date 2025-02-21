@@ -22,7 +22,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({BookAlreadyExistsException.class,
             WriterAlreadyExistsException.class,
             UserAlreadyExist.class,
-            LoanAlreadyExistsException.class})
+            LoanAlreadyExistsException.class,
+            BookNotAvailableException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiResponse handleConflictException(RuntimeException e) {
         return new ApiResponse(e.getMessage(), null);
