@@ -28,6 +28,14 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @ManyToMany
+    @JoinTable(
+            name = "user_favorite_books",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "book_id")
+    )
+    private Set<Book> favoriteBooks = Set.of();
+
     @OneToMany(mappedBy = "user")
     private Set<Loan> loans = Set.of();
 
@@ -36,5 +44,10 @@ public class User {
         this.email = email;
         this.password = password;
         this.role = role;
+    }
+
+    public void addFavoriteBook(Book bookToAdd) {
+        favoriteBooks.add(bookToAdd);
+        System.out.println(favoriteBooks.size());
     }
 }

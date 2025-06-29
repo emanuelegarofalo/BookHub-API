@@ -1,16 +1,19 @@
 package com.manu.BookHubAPI.service;
 
 import com.manu.BookHubAPI.dto.UserDTO;
+import com.manu.BookHubAPI.exception.BookNotFoundException;
 import com.manu.BookHubAPI.exception.UserAlreadyExist;
 import com.manu.BookHubAPI.exception.UserNotFoundException;
+import com.manu.BookHubAPI.model.Book;
 import com.manu.BookHubAPI.model.User;
+import com.manu.BookHubAPI.repository.BookRepository;
 import com.manu.BookHubAPI.repository.UserRepository;
 import com.manu.BookHubAPI.repository.specifications.UserSpecification;
 import com.manu.BookHubAPI.request.UserCriteriaDTO;
-import com.manu.BookHubAPI.request.WriterCriteriaDTO;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
@@ -18,6 +21,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final BookRepository bookRepository;
     private final UserSpecification userSpecification;
 
     public Set<User> getUser(UserCriteriaDTO criteria) {
@@ -67,5 +71,13 @@ public class UserService {
         }
 
         userRepository.save(userToUpdate);
+    }
+
+    @Transactional
+    public void updateUserFavoriteBook(Long userId, Long bookId) throws UserNotFoundException, BookNotFoundException {
+        Book book = bookRepository.findById(bookId).orElseThrow(BookNotFoundException::new);
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+
+        user.addFavoriteBook(book);
     }
 }

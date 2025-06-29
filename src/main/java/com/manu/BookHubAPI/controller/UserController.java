@@ -50,4 +50,10 @@ public class UserController {
         userService.updateUser(id, criteria);
         return ResponseEntity.ok(new ApiResponse("user info updated", null));
     }
+
+    @PutMapping("/updateuserfavoritebook")
+    public ResponseEntity<ApiResponse> updateUserFavoriteBook(@RequestParam Long userId, @RequestParam Long bookId) {
+        userService.updateUserFavoriteBook(userId, bookId);
+        return ResponseEntity.ok(new ApiResponse("user favorite book updated", null));
+    }
 }
